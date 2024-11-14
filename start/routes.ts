@@ -30,10 +30,12 @@ Route.group(() => {
 }).middleware('auth')
 
 Route.group(() => {
-  Route.get('/products', 'ProductsController.list')
-  Route.get('/products/:id', 'ProductsController.show')
-  Route.post('/products', 'ProductsController.create') 
-  Route.put('/products/:id/stock', 'ProductsController.updateStock') 
-}).middleware('auth')
+  Route.get('/products', 'ProductsController.list').middleware('auth') 
+  Route.get('/products/:id', 'ProductsController.show').middleware('auth') 
+  Route.put('/products/:id', 'ProductsController.update').middleware('auth') 
+  Route.delete('/products/:id', 'ProductsController.delete').middleware('auth') 
+  Route.post('/products', 'ProductsController.create').middleware('auth') 
+  Route.put('/products/:id/stock', 'ProductsController.updateStock').middleware('auth') 
+})
 
-Route.get('/profile', 'UserController.profile').middleware('auth')
+Route.get('/profile', 'UserController.profile')

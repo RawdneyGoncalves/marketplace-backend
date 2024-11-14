@@ -1,56 +1,43 @@
 import Product from 'App/Models/Product';
 
 export default class ProductRepository {
-  /**
-   * Lista todos os produtos, opcionalmente com a categoria.
-   */
-  public async findAll(preloadCategory: boolean = true): Promise<Product[]> {
-    const query = Product.query();
-    if (preloadCategory) {
-      query.preload('category');
-    }
-    return await query;
+  private transformToDTO(product: Product): Product {
+    return product;
   }
 
-  /**
-   * Busca um produto pelo ID, com a opção de pré-carregar a categoria.
-   * @param id ID do produto
-   * @param preloadCategory Indica se deve pré-carregar a categoria
-   */
-  public async findById(id: number, preloadCategory: boolean = true): Promise<Product | null> {
-    const query = Product.query().where('id', id);
-    if (preloadCategory) {
-      query.preload('category');
-    }
-    return await query.first();
+  public async findAll(): Promise<Product[]> {
+    const products = await Product.all();
+    return products.map(product => this.transformToDTO(product));
   }
 
-  /**
-   * Cria um novo produto no banco de dados.
-   * @param data Dados do produto
-   */
+  public async findById(id: number): Promise<Product | null> {
+    const product = await Product.find(id);
+    return product ? this.transformToDTO(product) : null;
+  }
+
   public async create(data: Partial<Product>): Promise<Product> {
-    return await Product.create(data);
+    const product = await Product.create(data);
+    return this.transformToDTO(product);
   }
 
-  /**
-   * Atualiza o estoque de um produto.
-   * @param productId ID do produto
-   * @param quantity Quantidade a ser ajustada (adicionada ou subtraída)
-   */
+  public async update(id: number, data: Partial<Product>): Promise<void> {
+    const product = await Product.findOrFail(id);
+    Object.assign(product, data);
+    await product.save();
+  }
+
   public async updateStock(productId: number, quantity: number): Promise<Product> {
     const product = await Product.findOrFail(productId);
     product.stock += quantity;
     await product.save();
-    return product;
+    return this.transformToDTO(product);
   }
 
-  /**
-   * Deleta um produto pelo ID.
-   * @param id ID do produto
-   */
   public async delete(id: number): Promise<void> {
-    const product = await Product.findOrFail(id);
+    const product = await Product.find(id);
+    if (!product) {
+      throw new Error('Produto não encontrado');
+    }
     await product.delete();
   }
 }

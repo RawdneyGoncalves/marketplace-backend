@@ -1,7 +1,7 @@
-import BaseSchema from '@ioc:Adonis/Lucid/Schema'
+import BaseSchema from '@ioc:Adonis/Lucid/Schema';
 
 export default class extends BaseSchema {
-  protected tableName = 'cart_items'
+  protected tableName = 'cart_items';
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {

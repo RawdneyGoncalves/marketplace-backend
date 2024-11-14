@@ -4,14 +4,14 @@ export default class extends BaseSchema {
   protected tableName = 'categories'
 
   public async up() {
-    this.schema.createTable(this.tableName, (table) => {
-      table.increments('id');
-      table.string('name', 255).notNullable();
-      table.timestamps(true, true);
-    });
+    this.schema.table(this.tableName, (table) => {
+      table.integer('category_id').unsigned().nullable().references('id').inTable('categories').onDelete('SET NULL')  // Tornando a categoria opcional
+    })
   }
 
   public async down() {
-    this.schema.dropTable(this.tableName);
+    this.schema.table(this.tableName, (table) => {
+      table.dropColumn('category_id')
+    })
   }
 }

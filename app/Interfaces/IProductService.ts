@@ -1,7 +1,10 @@
+import Product from 'App/Models/Product';
+
 export interface IProductService {
-    listProducts(): Promise<any[]>;
-    getProductDetails(id: string): Promise<any>;
-    addProduct(data: Partial<any>): Promise<any>;
-    adjustStock(productId: string, quantity: number): Promise<any>;
-  }
-  
+  listProducts(): Promise<Product[]>;
+  getProductDetails(id: string): Promise<Product | null>;
+  addProduct(data: Partial<Product>): Promise<Product>;
+  updateProduct(id: string, data: Partial<Product>): Promise<Product>;
+  adjustStock(productId: string, quantity: number): Promise<Product>;
+  deleteProduct(id: string): Promise<void>;
+}

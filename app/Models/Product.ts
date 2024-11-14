@@ -1,22 +1,31 @@
-import { BaseModel, column, belongsTo, BelongsTo } from '@ioc:Adonis/Lucid/Orm';
-import Category from './Category';
+import { BaseModel, column, belongsTo, BelongsTo } from '@ioc:Adonis/Lucid/Orm'
+import Category from 'App/Models/Category'
 
 export default class Product extends BaseModel {
   @column({ isPrimary: true })
-  public id: number;
+  public id: number
 
   @column()
-  public name: string;
+  public img: string
 
   @column()
-  public price: number;
+  public title: string
 
   @column()
-  public stock: number;
+  public price: number
 
   @column()
-  public categoryId: number;
+  public color: string
+
+  @column()
+  public type: string
+
+  @column()
+  public stock: number
+
+  @column()
+  public categoryId: number | null
 
   @belongsTo(() => Category)
-  public category: BelongsTo<typeof Category>;
+  public category: BelongsTo<typeof Category>
 }

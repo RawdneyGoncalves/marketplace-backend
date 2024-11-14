@@ -1,29 +1,28 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
-import CartItem from 'App/Models/CartItem';
+
+import CartService from 'App/Services/CartService';
 
 export default class CartController {
+  private cartService: CartService;
+
+  constructor() {
+    this.cartService = new CartService();
+  }
+
   public async addItem({ request, auth }: HttpContextContract) {
     const { productId, quantity } = request.all();
     const user = auth.user!;
-
-    const cartItem = await CartItem.create({ userId: user.id, productId, quantity });
-
-    return cartItem;
+    return await this.cartService.addItem(user.id, productId, quantity);
   }
 
   public async removeItem({ params, auth }: HttpContextContract) {
     const user = auth.user!;
-    const item = await CartItem.query()
-      .where('user_id', user.id)
-      .where('id', params.id)
-      .firstOrFail();
-
-    await item.delete();
+    await this.cartService.removeItem(user.id, params.id);
     return { message: 'Item removed' };
   }
 
   public async viewCart({ auth }: HttpContextContract) {
     const user = auth.user!;
-    return await CartItem.query().where('user_id', user.id).preload('product');
+    return await this.cartService.getCart(user.id);
   }
 }
